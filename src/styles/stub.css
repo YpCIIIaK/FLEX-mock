@@ -118,6 +118,11 @@
   100% { transform: rotate(-360deg) scaleX(calc(1 - (1 - var(--round)) * 0.0)); }
 }
 
+body.is-locked .blob,
+body.is-locked .blob__ellipse {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .blob,
   .blob__ellipse { animation: none; }
