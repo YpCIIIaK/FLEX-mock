@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Скоро начнётся новая глава</title>
+  <meta name="description" content="Скоро начнётся новая глава. Жаңа кезең жақында басталады. A new chapter begins soon." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/tt-norms-pro-450.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/tt-norms-pro-700.woff2" crossorigin />
+
+  <link rel="stylesheet" href="src/styles/main.css?v=16" />
+</head>
+<body>
+
+  <main class="stub">
+
+    <div class="blobs" aria-hidden="true">
+      <div class="blob blob--purple">
+        <span class="blob__ellipse blob__ellipse--1"></span>
+        <span class="blob__ellipse blob__ellipse--2"></span>
+        <span class="blob__ellipse blob__ellipse--3"></span>
+        <span class="blob__ellipse blob__ellipse--4"></span>
+        <span class="blob__ellipse blob__ellipse--5"></span>
+      </div>
+      <div class="blob blob--blue">
+        <span class="blob__ellipse blob__ellipse--1"></span>
+        <span class="blob__ellipse blob__ellipse--2"></span>
+        <span class="blob__ellipse blob__ellipse--3"></span>
+        <span class="blob__ellipse blob__ellipse--4"></span>
+        <span class="blob__ellipse blob__ellipse--5"></span>
+      </div>
+    </div>
+
+    <div class="stub__logo">
+      <img src="assets/images/logo.png" alt="" width="277" height="85" />
+    </div>
+
+    <div class="lang" role="group" aria-label="Язык / Тіл">
+      <button class="lang__item" type="button" data-lang="kz">ҚАЗ</button>
+      <span class="lang__divider" aria-hidden="true"></span>
+      <button class="lang__item is-active" type="button" data-lang="ru">РУС</button>
+    </div>
+
+    <div class="drum" data-drum aria-live="polite">
+      <div class="drum__track" data-drum-track></div>
+    </div>
+
+    <div class="notice" data-notice>
+      <p class="notice__text" data-notice-text></p>
+      <button class="notice__button" type="button" data-agree></button>
+    </div>
+
+    <div class="copyright">
+      <p class="copyright__text" data-copyright></p>
+      <a class="copyright__mail" href="mailto:support@myflex.kz" data-contacts></a>
+    </div>
+
+    <div class="footer">
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+
+  </main>
+
+  <div class="modal" data-modal role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title" data-modal-title></h2>
+        <button class="modal__close" type="button" aria-label="Закрыть" data-modal-close>
+          <img src="assets/images/close.svg" alt="" width="20" height="20" />
+        </button>
+      </div>
+      <div class="modal__line"></div>
+      <div class="modal__body" data-modal-body tabindex="0"></div>
+    </div>
+  </div>
+
+  <script src="src/lib/i18n.js?v=1"></script>
+  <script src="src/lib/main.js?v=1"></script>
+</body>
+</html>
