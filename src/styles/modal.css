@@ -84,6 +84,9 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
   padding-right: calc(12 * var(--wm));
   font-size: calc(14 * var(--wm));
   line-height: calc(22 * var(--wm));

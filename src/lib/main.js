@@ -186,6 +186,73 @@
   if (els.agree) els.agree.addEventListener("click", hideNotice);
   if (safeGet(STORAGE_AGREE) === "1") els.notice.classList.add("is-hidden");
 
+  var smoothScroll = {
+    target: 0,
+    raf: null,
+    ease: 0.16,
+
+    supported: function () {
+      return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    },
+
+    max: function (el) {
+      return Math.max(0, el.scrollHeight - el.clientHeight);
+    },
+
+    sync: function (el) {
+      this.target = el.scrollTop;
+      if (this.raf) {
+        window.cancelAnimationFrame(this.raf);
+        this.raf = null;
+      }
+    },
+
+    run: function (el) {
+      var self = this;
+
+      if (this.raf) return;
+
+      this.raf = window.requestAnimationFrame(function tick() {
+        var diff = self.target - el.scrollTop;
+
+        if (Math.abs(diff) < 0.5) {
+          el.scrollTop = self.target;
+          self.raf = null;
+          return;
+        }
+
+        el.scrollTop += diff * self.ease;
+        self.raf = window.requestAnimationFrame(tick);
+      });
+    },
+
+    onWheel: function (e) {
+      var el = els.modalBody;
+      var limit = this.max(el);
+
+      if (!limit || !this.supported() || e.ctrlKey) return;
+      if (e.deltaMode !== 0) return;
+
+      this.target = Math.min(limit, Math.max(0, this.target + e.deltaY));
+      e.preventDefault();
+      this.run(el);
+    }
+  };
+
+  if (els.modalBody) {
+    els.modalBody.addEventListener("wheel", function (e) {
+      smoothScroll.onWheel(e);
+    }, { passive: false });
+
+    els.modalBody.addEventListener("pointerdown", function () {
+      smoothScroll.sync(els.modalBody);
+    });
+
+    els.modalBody.addEventListener("keydown", function () {
+      smoothScroll.sync(els.modalBody);
+    });
+  }
+
   function openModal(key) {
     var content = I18N[state.lang].modals[key];
     if (!content) return;
@@ -194,6 +261,7 @@
     els.modalTitle.textContent = content.title;
     els.modalBody.innerHTML = content.body;
     els.modalBody.scrollTop = 0;
+    smoothScroll.sync(els.modalBody);
     els.modal.classList.add("is-open");
     document.body.classList.add("is-locked");
   }
