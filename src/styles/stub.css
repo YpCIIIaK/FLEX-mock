@@ -128,8 +128,10 @@ body.is-locked .blob {
 }
 
 .lang {
+  --lang-hit: calc(9 * var(--wm));
+
   position: absolute;
-  z-index: 4;
+  z-index: 20;
   right: calc(36 * var(--wm));
   top: calc(28 * var(--wm));
   display: flex;
@@ -137,20 +139,31 @@ body.is-locked .blob {
   width: calc(110 * var(--wm));
   height: calc(28 * var(--wm));
   padding: 0;
+  border: none;
+  background: none;
+}
+
+.lang::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   border: 1px solid var(--w-18);
   border-radius: calc(9 * var(--wm));
   background-color: var(--w-06);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  overflow: hidden;
 }
 
 .lang__item {
+  position: relative;
   flex: 1 1 0;
   align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   font-size: calc(12 * var(--wm));
   font-weight: 450;
   letter-spacing: calc(0.5 * var(--wm));
@@ -163,7 +176,17 @@ body.is-locked .blob {
   color: var(--white);
 }
 
+.lang__item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(-1 * var(--lang-hit));
+  bottom: calc(-1 * var(--lang-hit));
+}
+
 .lang__divider {
+  pointer-events: none;
   width: 1px;
   height: calc(18 * var(--wm));
   background-color: var(--w-25);
@@ -389,6 +412,8 @@ body.is-locked .blob {
   }
 
   .lang {
+    --lang-hit: calc(14 * var(--wm));
+
     right: calc(20 * var(--wm));
     top: calc(20 * var(--wm));
   }

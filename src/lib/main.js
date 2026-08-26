@@ -172,11 +172,17 @@
     }
   }
 
-  els.langButtons.forEach(function (btn) {
-    btn.addEventListener("click", function () {
+  var langBar = document.querySelector(".lang");
+
+  if (langBar) {
+    langBar.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest("[data-lang]") : null;
+      if (!btn) return;
+
+      e.preventDefault();
       setLang(btn.getAttribute("data-lang"));
     });
-  });
+  }
 
   function hideNotice() {
     els.notice.classList.add("is-hidden");
