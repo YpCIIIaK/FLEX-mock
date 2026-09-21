@@ -1,26 +1,32 @@
-# Заглушка
+# FLEX Telegram Mini App
 
-Статическая заглушка (RU / KZ) с барабанной прокруткой текста, возрастным уведомлением 21+ и модалками юр. документов.
+Стартовая заглушка Telegram Mini App и минимальный webhook для бота. Проект разворачивается на Vercel как отдельный проект с Root Directory `telegram-mini-app`.
 
-## Структура
-```
-index.html
-assets/
-  images/   логотип (logo.png, 833×255 = @3x), иконки
-  fonts/    TT Norms Pro Trial (woff2, сабсет) + лицензия
-  video/    сюда фоновое видео bg.mp4 (опционально)
-src/
-  styles/   main.css = только @import; vars, fonts, global, stub, modal
-  lib/      i18n.js (весь текст) + main.js (логика)
+## Локальный запуск
+
+```powershell
+npm install
+npm run dev
 ```
 
-## Что настраивается
-- **Тексты и переводы** — `src/lib/i18n.js` (фразы барабана, уведомление, футер, копирайт, модалки).
-- **Скорость барабана** — `DRUM_DELAY` в `src/lib/main.js`, длительность и «пружинность» — `--drum-duration` / `--drum-ease` в `src/styles/vars.css`.
-- **Шрифт** — TT Norms Pro Trial, подключён в `src/styles/fonts.css`. Начертания 450 (Normal) и 700 (Bold), сабсет latin + cyrillic с казахскими глифами, ~22 КБ каждое.
-- **Видео-фон** — раскомментировать блок `.stub__video` в `index.html`.
+В браузере интерфейс работает в режиме предпросмотра. В Telegram дополнительно вызываются `ready()`, `expand()` и настройка цветов клиента.
 
-## TODO
-- анимация градиента (движение пятен) — делаем позже;
-- финальные тексты политик от клиента;
-- лицензия шрифта: сейчас trial-версия (`assets/fonts/LICENSE-trial.pdf`), для прода нужна коммерческая.
+## Деплой на Vercel
+
+1. Импортировать Git-репозиторий в Vercel.
+2. Указать Root Directory: `telegram-mini-app`.
+3. Framework Preset: Vite. Build Command: `npm run build`. Output Directory: `dist`.
+4. Добавить переменные из `.env.example` в Project Settings → Environment Variables.
+5. После первого деплоя записать публичный HTTPS URL в `MINI_APP_URL` и повторно развернуть проект.
+
+## Подключение Telegram
+
+Создать бота через `@BotFather`, затем назначить webhook:
+
+```text
+https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=https://<VERCEL_DOMAIN>/api/webhook&secret_token=<TELEGRAM_WEBHOOK_SECRET>
+```
+
+В `@BotFather` также можно выбрать бота → Bot Settings → Configure Mini App и указать тот же HTTPS URL. Токен бота хранится только в переменных Vercel и не должен попадать во фронтенд или Git.
+
+`api/webhook.ts` сейчас отвечает на `/start` кнопкой открытия Mini App. Бизнес-логика будет добавлена после утверждения сценария.
