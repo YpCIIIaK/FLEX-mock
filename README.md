@@ -1,6 +1,6 @@
 # FLEX Telegram Mini App
 
-Стартовая заглушка Telegram Mini App и минимальный webhook для бота. Проект разворачивается на Vercel как отдельный проект с Root Directory `telegram-mini-app`.
+Стартовая заглушка Telegram Mini App и минимальный webhook для бота. Проект готов к развёртыванию на Vercel прямо из корня репозитория.
 
 ## Локальный запуск
 
@@ -14,7 +14,7 @@ npm run dev
 ## Деплой на Vercel
 
 1. Импортировать Git-репозиторий в Vercel.
-2. Указать Root Directory: `telegram-mini-app`.
+2. Root Directory оставить пустым: приложение уже находится в корне репозитория.
 3. Framework Preset: Vite. Build Command: `npm run build`. Output Directory: `dist`.
 4. Добавить переменные из `.env.example` в Project Settings → Environment Variables.
 5. После первого деплоя записать публичный HTTPS URL в `MINI_APP_URL` и повторно развернуть проект.
