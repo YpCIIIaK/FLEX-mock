@@ -1,4 +1,5 @@
 const telegram = window.Telegram?.WebApp;
+const isTelegram = Boolean(telegram?.initData);
 const view = document.querySelector("#app-view");
 const nav = document.querySelector(".bottom-nav");
 const toast = document.querySelector("[data-toast]");
@@ -20,6 +21,7 @@ let toastTimer;
 
 document.querySelector("[data-user-name]").textContent = userName;
 document.querySelector("[data-user-avatar]").textContent = userName.slice(0, 1).toUpperCase();
+document.documentElement.dataset.runtime = isTelegram ? "telegram" : "browser";
 
 function haptic(type = "light") { telegram?.HapticFeedback?.impactOccurred(type); }
 
@@ -114,7 +116,7 @@ function bindForm() {
     view.innerHTML = `<section class="success"><span>✓</span><p class="eyebrow">Готово</p><h1>Спасибо!</h1><p>Демо-обращение принято. В настоящем приложении оно отправится менеджеру.</p><button class="primary-button" type="button" data-route="home">Вернуться на главную</button></section>`;
     telegram?.MainButton?.hide();
   });
-  if (telegram?.MainButton) {
+  if (isTelegram && telegram?.MainButton) {
     telegram.MainButton.setParams({ text: "Отправить", color: "#8068ff", text_color: "#ffffff", is_visible: true });
   }
 }
@@ -145,7 +147,7 @@ window.addEventListener("popstate", () => setRoute(location.hash.slice(1) || "ho
 telegram?.BackButton?.onClick(() => setRoute("profile"));
 telegram?.MainButton?.onClick(() => document.querySelector("[data-feedback-form]")?.requestSubmit());
 
-if (telegram) {
+if (isTelegram) {
   telegram.ready();
   telegram.expand();
   telegram.setHeaderColor("#08080b");
