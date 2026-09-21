@@ -55,9 +55,9 @@ const pages = {
         <div class="slider-controls"><div class="slider-dots" aria-label="Переключение слайдов">${products.map((_, index) => `<button class="slider-dot${index === 0 ? " is-active" : ""}" type="button" data-slide="${index}" aria-label="Слайд ${index + 1}"></button>`).join("")}</div><div class="slider-arrows"><button type="button" data-slider-prev aria-label="Предыдущий слайд">←</button><button type="button" data-slider-next aria-label="Следующий слайд">→</button></div></div>
       </div></section>`,
 
-  catalog: () => `<section class="page-head"><p class="eyebrow">Коллекция</p><h1>Найди свой FLEX</h1><p>Добавляй понравившиеся варианты в избранное.</p></section>
+  catalog: () => `<div class="catalog-page"><section class="page-head"><p class="eyebrow">Коллекция</p><h1>Найди свой FLEX</h1><p>Добавляй понравившиеся варианты в избранное.</p></section>
     <div class="filter-row" role="group" aria-label="Фильтр каталога"><button class="filter is-active" type="button" data-filter="all">Все</button><button class="filter" type="button" data-filter="new">Новинки</button><button class="filter" type="button" data-filter="popular">Популярное</button></div>
-    <section class="product-grid" data-product-grid>${products.map((item) => productCard(item)).join("")}</section>`,
+    <section class="product-grid" data-product-grid>${products.map((item) => productCard(item)).join("")}</section></div>`,
 
   profile: () => {
     const saved = products.filter((item) => favorites.has(item.id));
