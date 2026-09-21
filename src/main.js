@@ -5,9 +5,9 @@ const nav = document.querySelector(".bottom-nav");
 const toast = document.querySelector("[data-toast]");
 
 const products = [
-  { id: "one", name: "FLEX ONE", tone: "violet", note: "Лёгкий и лаконичный", tag: "Выбор недели" },
-  { id: "air", name: "FLEX AIR", tone: "blue", note: "Свежий характер", tag: "Новинка" },
-  { id: "bold", name: "FLEX BOLD", tone: "amber", note: "Выразительный профиль", tag: "Популярное" }
+  { id: "one", name: "FLEX ONE", tone: "violet", note: "Лёгкий и лаконичный", tag: "Выбор недели", description: "Сбалансированный вариант для знакомства с коллекцией FLEX. Мягкий профиль и чистый минималистичный характер.", traits: ["Мягкий профиль", "Сбалансированный", "Лаконичный"] },
+  { id: "air", name: "FLEX AIR", tone: "blue", note: "Свежий характер", tag: "Новинка", description: "Самый свежий представитель коллекции. Лёгкий характер с прохладным акцентом и продолжительным послевкусием.", traits: ["Свежий акцент", "Лёгкий", "Новинка"] },
+  { id: "bold", name: "FLEX BOLD", tone: "amber", note: "Выразительный профиль", tag: "Популярное", description: "Насыщенный вариант с ярким характером для тех, кто выбирает более выразительные сочетания.", traits: ["Насыщенный", "Яркий характер", "Популярное"] }
 ];
 
 const user = telegram?.initDataUnsafe?.user;
@@ -17,6 +17,7 @@ const safeUserName = escapeHTML(userName);
 const safeUsername = user?.username ? escapeHTML(user.username) : "";
 const favorites = new Set(JSON.parse(localStorage.getItem("flex-favorites") || "[]"));
 let currentRoute = "home";
+let feedbackReturnRoute = "profile";
 let toastTimer;
 
 document.querySelector("[data-user-name]").textContent = userName;
@@ -34,10 +35,10 @@ function notify(message) {
 
 function productCard(product, compact = false) {
   const active = favorites.has(product.id);
-  return `<article class="product-card product-card--${product.tone}${compact ? " product-card--compact" : ""}">
+  return `<article class="product-card product-card--${product.tone}${compact ? " product-card--compact" : ""}" data-route="product-${product.id}" role="button" tabindex="0" aria-label="Открыть ${product.name}">
     <div class="product-card__top"><span>${product.tag}</span><button class="favorite${active ? " is-active" : ""}" type="button" data-favorite="${product.id}" aria-label="${active ? "Убрать из избранного" : "Добавить в избранное"}">♡</button></div>
     <div class="product-visual" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div><h3>${product.name}</h3><p>${product.note}</p></div>
+    <div class="product-card__copy"><div><h3>${product.name}</h3><p>${product.note}</p></div><span class="product-card__arrow" aria-hidden="true">→</span></div>
   </article>`;
 }
 
@@ -68,7 +69,7 @@ const pages = {
       <button class="support-link" type="button" data-route="feedback"><span>↗</span><span><strong>Связаться с нами</strong><small>Ответим на вопрос или примем предложение</small></span><b>›</b></button>`;
   },
 
-  feedback: () => `<section class="page-head page-head--form"><button class="back-button" type="button" data-route="profile">←</button><p class="eyebrow">Обратная связь</p><h1>Напиши нам</h1><p>Это демонстрационная форма. После отправки покажем успешный сценарий.</p></section>
+  feedback: () => `<section class="page-head page-head--form"><button class="back-button" type="button" data-route="${feedbackReturnRoute}">←</button><p class="eyebrow">Обратная связь</p><h1>Напиши нам</h1><p>Это демонстрационная форма. После отправки покажем успешный сценарий.</p></section>
     <form class="form" data-feedback-form novalidate>
       <label><span>Имя</span><input name="name" type="text" value="${userName === "Гость" ? "" : safeUserName}" autocomplete="name" placeholder="Как к вам обращаться" required /></label>
       <label><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required /></label>
@@ -80,10 +81,28 @@ const pages = {
     </form>`
 };
 
+function productPage(product) {
+  const active = favorites.has(product.id);
+  return `<section class="product-detail">
+    <button class="back-button product-detail__back" type="button" data-route="catalog" aria-label="Вернуться в каталог">←</button>
+    <div class="product-detail__visual product-detail__visual--${product.tone}">
+      <span class="product-detail__tag">${product.tag}</span>
+      <button class="favorite favorite--detail${active ? " is-active" : ""}" type="button" data-favorite="${product.id}" aria-label="${active ? "Убрать из избранного" : "Добавить в избранное"}">♡</button>
+      <div class="product-visual product-visual--large" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+    <div class="product-detail__body"><p class="eyebrow">Коллекция FLEX</p><h1>${product.name}</h1><p class="product-detail__lead">${product.description}</p>
+      <div class="trait-list">${product.traits.map((trait) => `<span>${trait}</span>`).join("")}</div>
+      <div class="product-info"><div><span>Формат</span><strong>FLEX Edition</strong></div><div><span>Статус</span><strong>Доступен для знакомства</strong></div></div>
+      <button class="primary-button primary-button--wide product-detail__action" type="button" data-route="feedback">Узнать подробнее</button>
+    </div>
+  </section>`;
+}
+
 function setRoute(route, pushHash = true) {
-  if (!pages[route]) route = "home";
+  const product = route.startsWith("product-") ? products.find((item) => item.id === route.replace("product-", "")) : null;
+  if (!pages[route] && !product) route = "home";
   currentRoute = route;
-  view.innerHTML = pages[route]();
+  view.innerHTML = product ? productPage(product) : pages[route]();
   view.focus({ preventScroll: true });
   window.scrollTo({ top: 0, behavior: "auto" });
   const isRoot = ["home", "catalog", "profile"].includes(route);
@@ -156,8 +175,6 @@ function bindForm() {
 }
 
 document.addEventListener("click", (event) => {
-  const routeButton = event.target.closest("[data-route]");
-  if (routeButton) { haptic(); setRoute(routeButton.dataset.route); return; }
   const favoriteButton = event.target.closest("[data-favorite]");
   if (favoriteButton) {
     const id = favoriteButton.dataset.favorite;
@@ -168,6 +185,8 @@ document.addEventListener("click", (event) => {
     setRoute(currentRoute, false);
     return;
   }
+  const routeButton = event.target.closest("[data-route]");
+  if (routeButton) { haptic(); if (routeButton.dataset.route === "feedback") feedbackReturnRoute = currentRoute; setRoute(routeButton.dataset.route); return; }
   const filterButton = event.target.closest("[data-filter]");
   if (filterButton) {
     const matches = filterButton.dataset.filter === "new" ? products.filter((item) => item.tag === "Новинка") : filterButton.dataset.filter === "popular" ? products.filter((item) => item.tag === "Популярное") : products;
@@ -177,8 +196,13 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.addEventListener("keydown", (event) => {
+  const product = event.target.closest(".product-card[data-route]");
+  if (product && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); haptic(); setRoute(product.dataset.route); }
+});
+
 window.addEventListener("popstate", () => setRoute(location.hash.slice(1) || "home", false));
-telegram?.BackButton?.onClick(() => setRoute("profile"));
+telegram?.BackButton?.onClick(() => setRoute(currentRoute.startsWith("product-") ? "catalog" : currentRoute === "feedback" ? feedbackReturnRoute : "home"));
 telegram?.MainButton?.onClick(() => document.querySelector("[data-feedback-form]")?.requestSubmit());
 
 if (isTelegram) {
