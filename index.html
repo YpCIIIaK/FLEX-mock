@@ -10,37 +10,26 @@
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <main class="app">
+    <div class="app-shell">
       <div class="glow glow--violet" aria-hidden="true"></div>
       <div class="glow glow--blue" aria-hidden="true"></div>
-
       <header class="topbar">
-        <img class="logo" src="/flex-logo.png" alt="FLEX" width="154" height="47" />
-        <span class="badge">21+</span>
+        <button class="brand" type="button" data-route="home" aria-label="На главную">
+          <img src="/flex-logo.png" alt="FLEX" width="154" height="47" />
+        </button>
+        <div class="user-chip">
+          <span class="user-chip__copy"><small>Добро пожаловать</small><strong data-user-name>Гость</strong></span>
+          <span class="avatar" data-user-avatar>Г</span>
+        </div>
       </header>
-
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero__mark" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-        <p class="eyebrow">Telegram Mini App</p>
-        <h1 id="hero-title">Скоро здесь<br />появится FLEX</h1>
-        <p class="lead">Готовим новый формат внутри Telegram. Быстрый, удобный и всегда под рукой.</p>
-      </section>
-
-      <section class="status" aria-label="Статус проекта">
-        <span class="status__dot" aria-hidden="true"></span>
-        <div>
-          <strong>Мы работаем над запуском</strong>
-          <p>Сообщим в боте, когда всё будет готово.</p>
-        </div>
-      </section>
-
-      <footer class="footer">
-        <p>Только для совершеннолетних пользователей 21+</p>
-        <span id="telegram-status">Открыто в режиме предпросмотра</span>
-      </footer>
-    </main>
+      <main class="view" id="app-view" tabindex="-1"></main>
+      <nav class="bottom-nav" aria-label="Основная навигация">
+        <button class="nav-item is-active" type="button" data-route="home"><span class="nav-icon" aria-hidden="true">⌂</span><span>Главная</span></button>
+        <button class="nav-item" type="button" data-route="catalog"><span class="nav-icon" aria-hidden="true">◇</span><span>Каталог</span></button>
+        <button class="nav-item" type="button" data-route="profile"><span class="nav-icon" aria-hidden="true">○</span><span>Профиль</span></button>
+      </nav>
+    </div>
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
