@@ -49,8 +49,10 @@ const pages = {
     <section class="section"><div class="section-heading"><div><p class="eyebrow">Возможности</p><h2>Что уже работает</h2></div></div>
       <div class="feature-grid"><button class="feature-card" type="button" data-route="catalog"><span class="feature-icon">◇</span><strong>Каталог</strong><small>Карточки и избранное</small></button><button class="feature-card" type="button" data-route="feedback"><span class="feature-icon">↗</span><strong>Обратная связь</strong><small>Рабочая демо-форма</small></button></div>
     </section>
-    <section class="section"><div class="section-heading"><div><p class="eyebrow">Подборка</p><h2>Для знакомства</h2></div><button class="text-button" type="button" data-route="catalog">Все</button></div><div class="product-scroll">${products.slice(0, 2).map((item) => productCard(item, true)).join("")}</div></section>
-    <section class="demo-note"><span>i</span><p><strong>Демонстрационная версия</strong>Данные сохраняются только на этом устройстве.</p></section>`,
+    <section class="section"><div class="section-heading"><div><p class="eyebrow">Подборка</p><h2>Для знакомства</h2></div><button class="text-button" type="button" data-route="catalog">Все</button></div>
+      <div class="slider" data-slider><div class="product-scroll" data-slider-track>${products.map((item) => productCard(item, true)).join("")}</div>
+        <div class="slider-controls"><div class="slider-dots" aria-label="Переключение слайдов">${products.map((_, index) => `<button class="slider-dot${index === 0 ? " is-active" : ""}" type="button" data-slide="${index}" aria-label="Слайд ${index + 1}"></button>`).join("")}</div><div class="slider-arrows"><button type="button" data-slider-prev aria-label="Предыдущий слайд">←</button><button type="button" data-slider-next aria-label="Следующий слайд">→</button></div></div>
+      </div></section>`,
 
   catalog: () => `<section class="page-head"><p class="eyebrow">Коллекция</p><h1>Найди свой FLEX</h1><p>Добавляй понравившиеся варианты в избранное.</p></section>
     <div class="filter-row" role="group" aria-label="Фильтр каталога"><button class="filter is-active" type="button" data-filter="all">Все</button><button class="filter" type="button" data-filter="new">Новинки</button><button class="filter" type="button" data-filter="popular">Популярное</button></div>
@@ -91,6 +93,38 @@ function setRoute(route, pushHash = true) {
   if (telegram?.BackButton) isRoot ? telegram.BackButton.hide() : telegram.BackButton.show();
   telegram?.MainButton?.hide();
   bindForm();
+  bindSlider();
+}
+
+function bindSlider() {
+  const slider = document.querySelector("[data-slider]");
+  if (!slider) return;
+  const track = slider.querySelector("[data-slider-track]");
+  const cards = [...track.children];
+  const dots = [...slider.querySelectorAll("[data-slide]")];
+  const previous = slider.querySelector("[data-slider-prev]");
+  const next = slider.querySelector("[data-slider-next]");
+  let active = 0;
+
+  const updateControls = () => {
+    dots.forEach((dot, index) => dot.classList.toggle("is-active", index === active));
+    previous.disabled = active === 0;
+    next.disabled = active === cards.length - 1;
+  };
+  const goTo = (index) => {
+    active = Math.max(0, Math.min(index, cards.length - 1));
+    track.scrollTo({ left: cards[active].offsetLeft - track.offsetLeft, behavior: "smooth" });
+    updateControls();
+  };
+
+  track.addEventListener("scroll", () => {
+    const closest = cards.reduce((best, card, index) => Math.abs(card.offsetLeft - track.offsetLeft - track.scrollLeft) < Math.abs(cards[best].offsetLeft - track.offsetLeft - track.scrollLeft) ? index : best, 0);
+    if (closest !== active) { active = closest; updateControls(); }
+  }, { passive: true });
+  dots.forEach((dot, index) => dot.addEventListener("click", () => { haptic(); goTo(index); }));
+  previous.addEventListener("click", () => { haptic(); goTo(active - 1); });
+  next.addEventListener("click", () => { haptic(); goTo(active + 1); });
+  updateControls();
 }
 
 function bindForm() {
